@@ -3,28 +3,27 @@
       <table :class="$style.content__table">
         <thead>
           <tr>
-            <th>#</th>
-             <th>Date</th>
-            <th>Description</th>
-            <th>Amount</th>
+            <th>id</th>
+            <th>Date</th>
+            <th>Category</th>
+            <th>Value</th>
           </tr>
         </thead>
         <tbody>
           <tr v-for="(item, index) in items" :key="index">
-            <td>{{ index + 1 }}</td>
+            <td>{{ item.id }}</td>
             <td>{{ item.date }}</td>
-            <td>{{ item.description }}</td>
-            <td>{{ item.amount }}</td>
+            <td>{{ item.category }}</td>
+            <td>{{ item.value }}</td>
           </tr>
         </tbody>
       </table>
-  </div>
+    </div>
 </template>
 
 <script>
 export default {
-  name: 'PaymentDisplay',
-  //   props: ['show'],
+  name: 'PaymentsDisplay',
   props: {
     items: {
       type: Array,
@@ -33,6 +32,7 @@ export default {
   },
 };
 </script>
+
 <style lang="scss" module>
 
 .content {

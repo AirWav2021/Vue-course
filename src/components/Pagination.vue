@@ -1,61 +1,55 @@
 <template>
-  <div class="pagination">
-    <span @click="getPrevous">Previous</span>
+  <div :class="$style.pagination">
+    <span :class="$style.span" @click="getPrevous">Previous</span>
     <span
-      class="pages"
-      v-for="n in pages"
-      :key="n"
-      @click="selectPage(n)"
-      :class="{ active: n == isActive }"
+      class="page"
+      v-for="numberPage in pages"
+      :key="numberPage"
+      @click="selectPage(numberPage)"
+      :class="[{ [$style.active]: numberPage == isActivePage }, $style.span]"
     >
-      {{ n }}</span
+      {{ numberPage }}</span
     >
-    <span @click="getNext">Next</span>
+    <span :class="$style.span" @click="getNext">Next</span>
   </div>
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
+
 export default {
   name: 'Pagination',
-  props: {
-    length: {
-      type: Number,
-      required: true,
-    },
-  },
   data() {
     return {
-      isActive: 1,
+      isActivePage: 1,
     };
   },
   computed: {
-    pages() {
-      return Math.ceil(this.length / 5);
-    },
+    ...mapGetters({ pages: 'paymentPages' }),
   },
   methods: {
     selectPage(page) {
-      this.isActive = page;
-      this.$emit('select-page', this.isActive);
+      this.isActivePage = page;
+      this.$emit('select-page', this.isActivePage);
     },
     getPrevous() {
-      if (this.isActive > 1) this.isActive -= 1;
-      this.selectPage(this.isActive);
+      if (this.isActivePage > 1) this.isActivePage -= 1;
+      this.selectPage(this.isActivePage);
     },
     getNext() {
-      if (this.isActive < Math.ceil(this.length / 5)) this.isActive += 1;
-      this.selectPage(this.isActive);
+      if (this.isActivePage < this.pages) this.isActivePage += 1;
+      this.selectPage(this.isActivePage);
     },
   },
 };
 </script>
 
-<style>
+<style module>
 .pagination {
   margin-top: 20px;
 }
 
-.pagination span {
+.span {
   font-weight: 600;
   cursor: pointer;
   padding: 0 10px;

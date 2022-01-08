@@ -1,55 +1,97 @@
 <template>
-  <div>
-    <form :class="$style.content__form">
-      <input :class="$style.content__input" type="text" :placeholder="inputDescription"
-      v-model.trim="description" />
-      <input :class="$style.content__input" type="number" :placeholder="inputAmount"
-      v-model.number="amount" />
-      <input :class="$style.content__input" type="date"
-      v-model="date" />
-      <button type="submit" :class="$style.content__btn" @click.prevent="addPayment">Add +
-      </button>
+  <div :class="$style.wrap">
+  <form :class="$style.content__form">
+      <input type="date" placeholder="Date" v-model="date" :class="$style.content__input">
+        <select name="" id=""
+        v-model="category"
+        :class="$style.content__input"
+        >
+        <option value=''
+        disabled selected>
+        {{categoryPlaceholder}}</option>
+          <option
+          v-for="category of categoryList"
+          :key="category"
+          :value="category"
+          >{{category}}</option>
+        </select>
+        <addCategoryForm />
+      <input type="number"
+      :placeholder="valuePlaceholder"
+      v-model="value"
+      :class="$style.content__input">
+      <button
+      @click.prevent="addPayment"
+      :class="$style.content__btn"
+      >Add  +</button>
     </form>
   </div>
 </template>
 
 <script>
+import { mapActions, mapGetters, mapMutations } from 'vuex';
+import addCategoryForm from './addCategoryForm.vue';
 
 export default {
   name: 'AddPaymentForm',
+  components: {
+    addCategoryForm,
+  },
   data() {
     return {
-      inputAmount: 'Amount',
-      inputDescription: 'Description',
+      value: '',
+      category: '',
       date: '',
-      amount: '',
-      description: '',
-
+      categoryPlaceholder: 'please select',
+      valuePlaceholder: 'Value',
+      showAddCategoryForm: false,
+      newCategory: '',
     };
   },
-
+  methods: {
+    ...mapActions(['fetchCategoryListData']),
+    ...mapMutations({ addCategory: 'ADD_CATEGORY_LIST' }),
+    addPayment() {
+      const {
+        id, date, category, value,
+      } = this;
+      const data = {
+        date: date || this.currentDate, id: +id, category, value: +value,
+      };
+      if (data.category !== '' && data.value !== 0) {
+        // eslint-disable-next-line no-plusplus
+        // data.id = (Math.floor(Math.random() * 9999) + 1);
+        data.id = this.paymentsCount;
+        this.$emit('add-payment', data);
+      }
+      this.categoryPlaceholder = 'Enter category !!!';
+      this.valuePlaceholder = 'Enter value !!!';
+    },
+    addNewCategory() {
+      if (this.newCategory) {
+        this.addCategory(this.newCategory);
+      }
+      this.showAddCategoryForm = !this.showAddCategoryForm;
+    },
+  },
   computed: {
-    paymentDate() {
-      const todayDate = new Date();
-      const date = `${todayDate.getDate()}.${todayDate.getMonth() + 1}.${todayDate.getFullYear()}`;
+    ...mapGetters(['categoryList', 'paymentsCount']),
+    currentDate() {
+      const d = new Date();
+      const year = d.getFullYear();
+      const month = d.getMonth() + 1;
+      let day = d.getDate();
+      if (day < 10) {
+        day = `0${day}`;
+      }
+      const date = `${day}.${month}.${year}`;
       return date;
     },
   },
-  methods: {
-    addPayment() {
-      const { date, description, amount } = this;
-      const data = { date: date || this.paymentDate, description, amount: +amount };
-      if (data.description !== '' && data.amount !== 0) {
-        this.$emit('add-payment', data);
-      }
-      this.inputDescription = 'Enter description !';
-      this.inputAmount = 'Enter amount !';
-    },
-  },
-
 };
 </script>
-<style module lang="scss">
+
+<style module lang="scss" scoped>
 .content {
 &__form {
   display: flex;
@@ -67,7 +109,7 @@ export default {
 }
 &__btn {
   align-self: flex-end;
-  width: 6em;
+  width: 25%;
   display: flex;
   justify-content: center;
   padding: 0.8em 1em;

@@ -1,90 +1,56 @@
 <template>
-  <div id="app">
-    <div class="wrapper">
-      <div class="content container">
-        <h1 class="content__title">My personal costs</h1>
-        <main class="content__main">
-          <CustomButton @click="showForm=!showForm" add/>
-          <AddPaymentForm @add-payment="addNewPayment" v-if="showForm"/>
-          <PaymentDisplay :items="paymentsListPage"/>
-          <Pagination :length="pageLength" @select-page="selectPage" />
-        </main>
-      </div>
-    </div>
-  </div>
+<div id="id">
+  <header class="header">
+    <nav @click="pushHistory($event)">
+      <!-- <a class="header__router-link" href="#dashboard">#Dashboard</a>
+      <a class="header__router-link" href="#about">#About</a>
+      <a class="header__router-link" href="#notfound">#Not found</a> -->
+      <a class="header__router-link" href="dashboard">Dashboard</a>
+      <a class="header__router-link" href="about">About</a>
+      <a class="header__router-link" href="notfound">Not found</a>
+    </nav>
+  </header>
+<main>
+  <Dashboard v-if="page === 'dashboard'"/>
+  <About v-if="page === 'about'"/>
+  <Not-Found v-if="page === 'notfound'"/>
+</main>
+</div>
 </template>
+
 <script>
-import CustomButton from '@/components/CustomButton.vue';
-import AddPaymentForm from '@/components/AddPaymentForm.vue';
-import PaymentDisplay from '@/components/PaymentDisplay.vue';
-import Pagination from '@/components/Pagination.vue';
+import Dashboard from './pages/Dashboard.vue';
+import About from './pages/About.vue';
+import NotFound from './pages/NotFound.vue';
 
 export default {
   name: 'App',
-  components: {
-    PaymentDisplay,
-    AddPaymentForm,
-    CustomButton,
-    Pagination,
-  },
-  data() {
-    return {
-      showForm: false,
-      paymentsList: [],
-      paymentsListPage: [],
-    };
-  },
+  components: { Dashboard, About, NotFound },
+  data: () => ({
+    page: '',
+  }),
   methods: {
-    fetchData() {
-      return [
-        {
-          date: '28.03.2020',
-          description: 'Food',
-          amount: 169,
-        },
-        {
-          date: '24.03.2020',
-          description: 'Auto',
-          amount: 360,
-        },
-        {
-          date: '24.03.2020',
-          description: 'Auto',
-          amount: 1000,
-        },
-        {
-          date: '24.03.2020',
-          description: 'Auto',
-          amount: 2000,
-        },
-        {
-          date: '24.03.2020',
-          description: 'Food',
-          amount: 532,
-        },
+    setPage() {
+      // this.page = window.location.hash.slice(1);
+      this.page = window.location.pathname.slice(1);
+    },
+    pushHistory(event) {
+      event.preventDefault();
+      // Фильтрация клика по ссылкам!
+      if (!event.target.classList.contains('router-link')) return;
 
-      ];
-    },
-    addNewPayment(data) {
-      const payment = { id: this.paymentsList.length + 1, ...data };
-      if (data) {
-        this.paymentsList.push(payment);
-      }
-    },
-    selectPage(page) {
-      const start = (page - 1) * 5;
-      this.paymentsListPage = this.paymentsList.slice(start, start + 5);
+      window.history.pushState({}, '', event.target.href);
+      this.setPage();
     },
   },
-  computed: {
-    pageLength() {
-      return this.paymentsList.length;
-    },
+  mounted() {
+    this.setPage();
+    window.addEventListener('hashchange', this.setPage);
   },
-  created() {
-    this.paymentsList = this.fetchData();
-    this.paymentsListPage = this.paymentsList.slice(0, 5);
+  beforeDestroy() {
+    window.removeEventListener('hashchange', this.setPage);
   },
+
 };
 </script>
 
@@ -97,14 +63,14 @@ export default {
   color: #2c3e50;
   margin-top: 60px;
 }
-.container {
-  max-width: 1140px;
-  margin: auto;
-}
-.content {
-  &__main {
-    max-width: 600px;
-    margin: 0 auto;
+.header {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+  &__router-link {
+    margin: 0 5px;
+    font-size: 30px;
   }
 }
+
 </style>
