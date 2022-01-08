@@ -37,10 +37,16 @@ export default {
   components: {
     addCategoryForm,
   },
+  props: {
+    urlData: {
+      type: Object,
+      default: () => {},
+    },
+  },
   data() {
     return {
-      value: '',
-      category: '',
+      value: this.urlData.value || '',
+      category: this.urlData.category || '',
       date: '',
       categoryPlaceholder: 'please select',
       valuePlaceholder: 'Value',
@@ -66,6 +72,13 @@ export default {
       }
       this.categoryPlaceholder = 'Enter category !!!';
       this.valuePlaceholder = 'Enter value !!!';
+      return this.$router.push(
+        {
+          name: 'addPayment',
+          params: { category },
+          query: { value },
+        },
+      ).catch(() => {});
     },
     addNewCategory() {
       if (this.newCategory) {
@@ -91,7 +104,7 @@ export default {
 };
 </script>
 
-<style module lang="scss" scoped>
+<style module lang="scss">
 .content {
 &__form {
   display: flex;

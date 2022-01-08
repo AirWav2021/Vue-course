@@ -1,76 +1,67 @@
 <template>
 <div id="id">
   <header class="header">
-    <nav @click="pushHistory($event)">
-      <!-- <a class="header__router-link" href="#dashboard">#Dashboard</a>
-      <a class="header__router-link" href="#about">#About</a>
-      <a class="header__router-link" href="#notfound">#Not found</a> -->
-      <a class="header__router-link" href="dashboard">Dashboard</a>
-      <a class="header__router-link" href="about">About</a>
-      <a class="header__router-link" href="notfound">Not found</a>
+    <nav>
+      <router-link
+      class="router-link"
+      :to="{ name: 'dashboard', params: { page: 1 } }">
+      Dashboard
+      </router-link>
+      <router-link
+      class="router-link"
+      :to="{ name: 'about' }">
+      About</router-link>
+      <router-link
+      class="router-link"
+      :to="{ name: '404' }">
+      NotFound
+      </router-link>
     </nav>
   </header>
 <main>
-  <Dashboard v-if="page === 'dashboard'"/>
-  <About v-if="page === 'about'"/>
-  <Not-Found v-if="page === 'notfound'"/>
+  <router-view></router-view>
 </main>
 </div>
 </template>
 
 <script>
-import Dashboard from './pages/Dashboard.vue';
-import About from './pages/About.vue';
-import NotFound from './pages/NotFound.vue';
 
 export default {
   name: 'App',
-  components: { Dashboard, About, NotFound },
   data: () => ({
     page: '',
   }),
   methods: {
-    setPage() {
-      // this.page = window.location.hash.slice(1);
-      this.page = window.location.pathname.slice(1);
-    },
-    pushHistory(event) {
-      event.preventDefault();
-      // Фильтрация клика по ссылкам!
-      if (!event.target.classList.contains('router-link')) return;
-
-      window.history.pushState({}, '', event.target.href);
-      this.setPage();
-    },
   },
   mounted() {
-    this.setPage();
-    window.addEventListener('hashchange', this.setPage);
   },
   beforeDestroy() {
-    window.removeEventListener('hashchange', this.setPage);
+
   },
 
 };
 </script>
 
 <style lang="scss">
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
   margin-top: 60px;
 }
+html, body {
+  font-family: 'Roboto', sans-serif;
+}
 .header {
   display: flex;
   justify-content: center;
   margin-top: 20px;
-  &__router-link {
+}
+.router-link {
     margin: 0 5px;
     font-size: 30px;
   }
-}
 
 </style>

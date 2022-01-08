@@ -40,7 +40,7 @@ export default {
 };
 </script>
 
-<style module lang="scss" scoped>
+<style module lang="scss">
 .content {
 &__form {
   display: flex;

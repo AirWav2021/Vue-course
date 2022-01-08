@@ -19,9 +19,15 @@ import { mapGetters } from 'vuex';
 
 export default {
   name: 'Pagination',
+  props: {
+    defaultPage: {
+      type: Number,
+      default: null,
+    },
+  },
   data() {
     return {
-      isActivePage: 1,
+      isActivePage: this.defaultPage ? this.defaultPage : 1,
     };
   },
   computed: {
@@ -31,6 +37,8 @@ export default {
     selectPage(page) {
       this.isActivePage = page;
       this.$emit('select-page', this.isActivePage);
+      this.$router.push({ name: 'dashboard', params: { page } })
+        .catch(() => {});
     },
     getPrevous() {
       if (this.isActivePage > 1) this.isActivePage -= 1;

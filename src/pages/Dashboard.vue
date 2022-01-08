@@ -2,14 +2,15 @@
   <div class="wrapper content container" >
     <h1 class="content__title">My personal costs</h1>
 <main class="content__main">
-    <CustomButton class="showbtn" @click="show=!show"> Add new costs  + </CustomButton>
-    <AddPaymentForm
-    @add-payment="addNewPayment"
+    <custom-button class="showbtn" @click="show=!show"> Add new costs  + </custom-button>
+    <add-payment-form
     v-if="show"
     :categoryList="categoryList"
+    :url-data="url"
+    @add-payment="addNewPayment"
     />
-    <PaymentsDisplay :items="showPayments"/>
-    <Pagination @select-page="changePage" />
+    <payments-display :items="showPayments"/>
+    <pagination :default-page="currentPage" @select-page="changePage" />
   </main>
   </div>
 </template>
@@ -33,6 +34,10 @@ export default {
     return {
       show: false,
       currentPage: 1,
+      url: {
+        category: null,
+        value: null,
+      },
     };
   },
   methods: {
@@ -69,10 +74,22 @@ export default {
     showPayments() {
       return this.paymentsList[`page${this.currentPage}`];
     },
+    getRoute() {
+      return this.$route.params;
+    },
   },
   created() {
     // this.paymentsList = this.fetchData()
     // console.log(this.fetchData())
+    if (this.getRoute?.page) {
+      this.currentPage = +this.getRoute?.page;
+    }
+    if (this.getRoute?.category) {
+      this.url.category = this.getRoute.category;
+      this.url.value = this.$route.query.value ? this.$route.query.value : 0;
+      this.show = true;
+    }
+    console.log('роутинг', this.$route);
     this.fetchPages();
     this.fetchData(this.currentPage);
     this.fetchCategoryListData();
