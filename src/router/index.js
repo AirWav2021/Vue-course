@@ -1,8 +1,5 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
-import Dashboard from '../pages/Dashboard.vue';
-import About from '../pages/About.vue';
-import NotFound from '../pages/404.vue';
 
 Vue.use(VueRouter);
 
@@ -19,12 +16,12 @@ const router = new VueRouter({
     },
     {
       path: '/dashboard',
-      component: Dashboard,
+      component: () => import(/* webpackChunkName: "dashboard" */ '../pages/Dashboard.vue'),
       children: [
         {
           path: ':page',
           name: 'dashboard',
-          component: Dashboard,
+          component: () => import(/* webpackChunkName: "dashboardPage" */ '../pages/Dashboard.vue'),
           children: [
             {
               path: 'add/payment/:category',
@@ -35,14 +32,14 @@ const router = new VueRouter({
       ],
     },
     {
-      path: '/dashboard/about*',
-      component: About,
+      path: '/about',
+      component: () => import(/* webpackChunkName: "about" */ '../pages/About.vue'),
       name: 'about',
     },
     {
       path: '/404',
       name: '404',
-      component: NotFound,
+      component: () => import(/* webpackChunkName: "404" */ '../pages/404.vue'),
     },
     {
       path: '*',

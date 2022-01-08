@@ -21,19 +21,41 @@
 <main>
   <router-view></router-view>
 </main>
+  <transition name ="fade">
+    <modal-window-add-payment-form
+    v-if="showModal"
+    :settings="settings"
+    ></modal-window-add-payment-form>
+  </transition>
 </div>
 </template>
 
 <script>
+import ModalWindowAddPaymentForm from './components/ModalWindowAddPaymentForm.vue';
 
 export default {
+  components: { ModalWindowAddPaymentForm },
   name: 'App',
   data: () => ({
     page: '',
+    showModal: false,
+    settings: null,
+
   }),
   methods: {
+    modalOpen(settings) {
+      this.settings = settings;
+      this.showModal = true;
+      console.log('show modal');
+    },
+    modalClose() {
+      console.log('close modal');
+      this.showModal = false;
+    },
   },
   mounted() {
+    this.$modal.EventBus.$on('show', this.modalOpen);
+    this.$modal.EventBus.$on('hide', this.modalClose);
   },
   beforeDestroy() {
 
@@ -63,5 +85,18 @@ html, body {
     margin: 0 5px;
     font-size: 30px;
   }
+  .fade-enter-active, .fade-leave-active {
+  transition: opacity .5s;
+}
+
+.fade-enter, .fade-leave-to {
+  opacity: 0;
+}
+.fade-enter-active, .fade-leave-active {
+  transition: opacity 0.3s;
+}
+.fade-enter, .fade-leave-to {
+  opacity: 0;
+}
 
 </style>

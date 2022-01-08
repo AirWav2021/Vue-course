@@ -15,14 +15,25 @@
             <td>{{ item.date }}</td>
             <td>{{ item.category }}</td>
             <td>{{ item.value }}</td>
+            <span
+            :class="$style.content__context_icon"
+            @click="showMenu($event.currentTarget, item)"
+            ><i class="fas fa-ellipsis-v"></i>
+          </span>
           </tr>
         </tbody>
       </table>
+      <transition name="fade">
+      <context-menu v-if="showContext" :settings="settings"></context-menu>
+    </transition>
     </div>
 </template>
 
 <script>
+import ContextMenu from './ContextMenu.vue';
+
 export default {
+  components: { ContextMenu },
   name: 'PaymentsDisplay',
   props: {
     items: {
@@ -30,12 +41,45 @@ export default {
       default: () => [],
     },
   },
+  data() {
+    return {
+      showContext: false,
+      settings: null,
+    };
+  },
+  methods: {
+    showMenu(element, item) {
+      if (this.showContext === true) {
+        this.$contextMenu.hide();
+      } else {
+        this.$contextMenu.show({ item, element });
+      }
+    },
+    contextOpen(settings) {
+      this.settings = settings;
+      this.showContext = true;
+    },
+    contextClose() {
+      this.showContext = false;
+    },
+  },
+  mounted() {
+    this.$contextMenu.EventBus.$on('show', this.contextOpen);
+    this.$contextMenu.EventBus.$on('hide', this.contextClose);
+  },
 };
 </script>
 
 <style lang="scss" module>
 
 .content {
+  &__context_icon {
+    cursor: pointer;
+    display: flex;
+    position: relative;
+    width: auto;
+    align-items: center;
+}
   &__table {
     width: 100%;
     margin: 30px auto;
@@ -53,5 +97,20 @@ export default {
       }
     }
   }
+
+.fade {
+  &:global(-enter-active) {
+    transition: opacity 0.5s;
+  }
+  &:global(-leave-active) {
+    transition: opacity 0.5s;
+  }
+  &:global(-enter) {
+    opacity: 0;
+  }
+  &:global(-leave-to) {
+    opacity: 0;
+  }
+}
 }
 </style>

@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-syntax */
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-plusplus */
 /* eslint-disable no-undef */
@@ -87,6 +88,25 @@ export default {
       } else {
         pages[`page${state.pageCount + 1}`] = [payment];
         state.paymentsCount++;
+      }
+    },
+    REMOVE_PAYMENT_DATA(state, id) {
+      // eslint-disable-next-line no-restricted-syntax
+      // eslint-disable-next-line guard-for-in
+      for (const key in state.paymentsList) {
+        state.paymentsList[key] = state.paymentsList[key].filter((item) => item.id !== id);
+      }
+    },
+    UPDATE_PAYMENT_DATA(state, payload) {
+      // eslint-disable-next-line guard-for-in
+      for (const key in state.paymentsList) {
+        state.paymentsList[key].forEach((item, index) => {
+          if (item.id === payload.id) {
+            state.paymentsList[key][index].date = payload.date;
+            state.paymentsList[key][index].category = payload.category;
+            state.paymentsList[key][index].value = payload.value;
+          }
+        });
       }
     },
   },

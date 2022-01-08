@@ -3,6 +3,11 @@
     <h1 class="content__title">My personal costs</h1>
 <main class="content__main">
     <custom-button class="showbtn" @click="show=!show"> Add new costs  + </custom-button>
+    <modal-window-add-payment-form
+    v-if="showModal"
+    @close="modalClose"
+    :settings="settings"
+    ></modal-window-add-payment-form>
     <add-payment-form
     v-if="show"
     :categoryList="categoryList"
@@ -18,6 +23,7 @@
 <script>
 import { mapActions, mapGetters, mapMutations } from 'vuex';
 import PaymentsDisplay from '../components/PaymentsDisplay.vue';
+import ModalWindowAddPaymentForm from '../components/ModalWindowAddPaymentForm.vue';
 import AddPaymentForm from '../components/AddPaymentForm.vue';
 import CustomButton from '../components/CustomButton.vue';
 import Pagination from '../components/Pagination.vue';
@@ -29,6 +35,8 @@ export default {
     AddPaymentForm,
     CustomButton,
     Pagination,
+    ModalWindowAddPaymentForm,
+    // ModalWindowAddPaymentForm,
   },
   data() {
     return {
@@ -64,6 +72,13 @@ export default {
         this.addPayment(payment);
         this.fetchPages();
       }
+    },
+    addPaymentModal() {
+      const settings = {
+        title: 'Add new payment',
+        content: 'addPaymentForm',
+      };
+      this.$modal.show(settings);
     },
   },
   computed: {

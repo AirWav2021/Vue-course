@@ -66,8 +66,8 @@ export default {
       };
       if (data.category !== '' && data.value !== 0) {
         // eslint-disable-next-line no-plusplus
-        // data.id = (Math.floor(Math.random() * 9999) + 1);
-        data.id = this.paymentsCount;
+        data.id = (Math.floor(Math.random() * 9999) + 1);
+        // data.id = this.paymentsCount;
         this.$emit('add-payment', data);
       }
       this.categoryPlaceholder = 'Enter category !!!';
