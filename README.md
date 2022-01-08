@@ -1,4 +1,4 @@
-# lesson-3
+# lesson-7
 
 ## Project setup
 ```
