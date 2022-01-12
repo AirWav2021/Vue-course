@@ -1,42 +1,31 @@
 <template>
-  <div id="app">
+  <v-app>
+    <v-app-bar app color="primary" dark>
+      <v-btn color="white" plain raised to="/">Dashboard</v-btn>
 
-    <img alt="Vue logo" src="./assets/logo.png">
-    <Calculator3 />
-  </div>
+      <v-spacer></v-spacer>
+    </v-app-bar>
+
+    <v-main>
+      <h1 class="text-h1 text-sm-h2 mb-5 text-center pa-10">My personal payments</h1>
+      <router-view />
+    </v-main>
+  </v-app>
 </template>
 
 <script>
-import Calculator3 from './components/Calculator3.vue';
 
 export default {
   name: 'App',
-  components: {
-    Calculator3,
-  },
-  data() {
-    return {
-      show: true,
 
-    };
-  },
-  methods: {
-  },
-  computed: {
-    filteredArr() {
-      return this.arr.filter(({ show }) => show);
-    },
-  },
+  data: () => ({
+    //
+  }),
 };
 </script>
 
-<style lang="scss">
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+<style scoped>
+color {
+  color: rgb(1, 153, 158);
 }
 </style>
